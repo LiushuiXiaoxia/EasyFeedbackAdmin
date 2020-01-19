@@ -41,7 +41,7 @@ public class FeedbackController extends BaseController {
     public TableDataInfo list(FeedbackDto feedbackDto) {
         startPage();
         Page<Object> page = PageHelper.getLocalPage();
-        PageResp<FeedbackDto> list = feedbackApi.list(page.getPageNum(), page.getPageSize());
+        PageResp<FeedbackDto> list = feedbackApi.search(feedbackDto, page.getPageNum(), page.getPageSize());
         return getDataTable(list.getData());
     }
 
@@ -53,19 +53,6 @@ public class FeedbackController extends BaseController {
         return prefix + "/detail";
     }
 
-//    /**
-//     * 导出意见反馈列表
-//     */
-//    @RequiresPermissions("fb:feedback:export")
-//    @Log(title = "意见反馈", businessType = BusinessType.EXPORT)
-//    @PostMapping("/export")
-//    @ResponseBody
-//    public AjaxResult export(Feedback feedback) {
-//        List<Feedback> list = feedbackService.selectFeedbackList(feedback);
-//        ExcelUtil<Feedback> util = new ExcelUtil<Feedback>(Feedback.class);
-//        return util.exportExcel(list, "feedback");
-//    }
-
     /**
      * 新增意见反馈
      */
@@ -73,17 +60,6 @@ public class FeedbackController extends BaseController {
     public String add() {
         return prefix + "/add";
     }
-
-//    /**
-//     * 新增保存意见反馈
-//     */
-//    @RequiresPermissions("fb:feedback:add")
-//    @Log(title = "意见反馈", businessType = BusinessType.INSERT)
-//    @PostMapping("/add")
-//    @ResponseBody
-//    public AjaxResult addSave(Feedback feedback) {
-//        return toAjax(feedbackService.insertFeedback(feedback));
-//    }
 
     /**
      * 修改意见反馈
@@ -108,15 +84,4 @@ public class FeedbackController extends BaseController {
         CommonResp<Integer> resp = feedbackApi.updateStatus(feedback.getId(), req);
         return toAjax(resp.getData());
     }
-
-    /**
-     * 删除意见反馈
-     */
-//    @RequiresPermissions("fb:feedback:remove")
-//    @Log(title = "意见反馈", businessType = BusinessType.DELETE)
-//    @PostMapping("/remove")
-//    @ResponseBody
-//    public AjaxResult remove(String ids) {
-//        return toAjax(feedbackService.deleteFeedbackByIds(ids));
-//    }
 }

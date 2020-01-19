@@ -13,6 +13,11 @@ public interface IFeedbackApi {
     @GetMapping("/feedback/list")
     PageResp<FeedbackDto> list(@RequestParam int page, @RequestParam int size);
 
+    @PostMapping("/feedback/search")
+    PageResp<FeedbackDto> search(@RequestBody FeedbackDto feedbackDto,
+                                 @RequestParam int page,
+                                 @RequestParam int size);
+
     @GetMapping("/feedback/{id}")
     CommonResp<FeedbackDto> detail(@PathVariable String id);
 

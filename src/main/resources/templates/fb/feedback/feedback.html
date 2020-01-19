@@ -12,7 +12,7 @@
                     <ul>
                         <li>
                             <p>状态：</p>
-                            <select name="buildType" th:with="type=${@dict.getType('fb_feedback_status')}">
+                            <select name="status" th:with="type=${@dict.getType('fb_feedback_status')}">
                                 <option value="">所有</option>
                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
                                         th:value="${dict.dictValue}"/>
