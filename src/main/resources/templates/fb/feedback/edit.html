@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改【请填写功能名称】')"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-feedback-edit" th:object="${feedback}">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Id：</label>
+            <div class="col-sm-8">
+                <input id="id" name="id" th:field="*{id}" class="form-control" type="text"
+                       readonly="readonly">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">意见描述：</label>
+            <div class="col-sm-8">
+                <input id="desc" name="desc" th:field="*{desc}" class="form-control" type="text"
+                       readonly="readonly">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">联系方式：</label>
+            <div class="col-sm-8">
+                <input id="contact" name="contact" th:field="*{contact}" class="form-control" type="text"
+                       readonly="readonly">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">图片：</label>
+            <div class="col-sm-8">
+                <div th:each="it,itStat:${feedback.images}">
+                    <img style="width: 150px; cursor:zoom-in; object-fit: contain;"
+                         th:src="${it}"
+                         th:onclick="window.open(this.src)"
+                         th:alt="${'图片'+(itStat.index+1)}"/>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">基本信息：</label>
+            <div class="col-sm-8">
+                <div class="form-control-static">
+                    <pre id="meta"><span th:text="*{meta}"></span></pre>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">额外信息：</label>
+            <div class="col-sm-8">
+                <div class="form-control-static">
+                    <pre id="extra"><span th:text="*{extra}"></span></pre>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">状态：</label>
+            <div class="col-sm-8">
+                <select class="form-control m-b" id="status" name="status"
+                        th:with="type=${@dict.getType('fb_feedback_status')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"
+                            th:field="*{status}"/>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: jsonview-js"/>
+<script type="text/javascript" th:inline="javascript">
+    var prefix = ctx + "fb/feedback";
+
+    /*<![CDATA[*/
+    var jsonMeta = /*[[${feedback.meta}]]*/ {'hello': 'world'};
+    var jsonExtra = /*[[${feedback.extra}]]*/ {'hello': 'world'};
+    /*]]>*/
+
+    $("#meta").JSONView(JSON.stringify(jsonMeta));
+    $("#extra").JSONView(JSON.stringify(jsonExtra));
+
+    $("#form-feedback-edit").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var data = {
+                "id": $("#id").val(),
+                "status": $("#status").val(),
+            };
+
+            $.operate.save(prefix + "/edit", data);
+        }
+    }
+</script>
+</body>
+</html>

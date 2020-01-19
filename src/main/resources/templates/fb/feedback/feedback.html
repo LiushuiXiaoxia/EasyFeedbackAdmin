@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('意见反馈列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>状态：</p>
+                            <select name="buildType" th:with="type=${@dict.getType('fb_feedback_status')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"/>
+                            </select>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i> 搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i> 重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('fb:feedback:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('fb:feedback:remove')}]];
+    var prefix = ctx + "fb/feedback";
+
+    var feedbackStatus = [[${@dict.getType('fb_feedback_status')}]];
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "意见反馈",
+            columns: [
+                {
+                    checkbox: false
+                },
+                {
+                    field: 'id',
+                    title: '主键',
+                    visible: false
+                },
+                {
+                    field: 'desc',
+                    title: '意见描述'
+                },
+                {
+                    field: 'contract',
+                    title: '联系方式'
+                },
+                {
+                    field: 'images',
+                    title: '图片信息',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        for (i in value) {
+                            actions.push(
+                                '<img style="width: auto; height: 100px; cursor:zoom-in; object-fit: contain;" ' +
+                                'onclick=\'window.open(this.src)\' ' + 'alt="image" ' + 'src=' + value[i] + '/> '
+                            );
+                        }
+                        return actions.join('');
+                    }
+                },
+                {
+                    field: 'meta',
+                    title: '基本信息',
+                    formatter: function (value, row, index) {
+                        return '<pre>' + JSON.stringify(value, null, 4) + '</pre>';
+                    }
+                },
+                {
+                    field: 'extra',
+                    title: '额外信息',
+                    formatter: function (value, row, index) {
+                        return '<pre>' + JSON.stringify(value, null, 4) + '</pre>';
+                    }
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(feedbackStatus, value);
+                    }
+                },
+                {
+                    field: 'id',
+                    title: '查看详情',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="gotoDetail(\'' + row.id + '\')">查看详情</a> ');
+                        return actions.join('');
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push(
+                            '<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" ' +
+                            'onclick="$.operate.editFull(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> '
+                        );
+                        // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function gotoDetail(id) {
+        var url = prefix + '/detail/' + id;
+        $.modal.openFull("查看" + "详情", url);
+    }
+</script>
+</body>
+</html>
