@@ -42,11 +42,13 @@
     var removeFlag = [[${@permission.hasPermi('fb:feedback:remove')}]];
     var prefix = ctx + "fb/feedback";
 
+    var pkgName = [[${pkgName}]];
+    var platform = [[${platform}]];
     var feedbackStatus = [[${@dict.getType('fb_feedback_status')}]];
 
     $(function () {
         var options = {
-            url: prefix + "/list",
+            url: prefix + "/list?pkgName=" + [[${pkgName}]] + "&platform=" + [[${platform}]],
             createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",
@@ -132,7 +134,7 @@
 
     function gotoDetail(id) {
         var url = prefix + '/detail/' + id;
-        $.modal.openFull("查看" + "详情", url);
+        $.modal.openFull("查看详情", url);
     }
 </script>
 </body>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('App应用列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse" style="display: none">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>Package Name：</p>
+                            <input type="text" name="pkgName"/>
+                        </li>
+                        <li>
+                            <p>Platform：</p>
+                            <input type="text" name="platform"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('fb:app:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('fb:app:remove')}]];
+    var prefix = ctx + "fb/app";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "App应用",
+            columns: [
+                {
+                    checkbox: false
+                },
+                {
+                    field: 'appName',
+                    title: 'Name'
+                },
+                {
+                    field: 'pkgName',
+                    title: 'App Info',
+                    formatter: function (value, row, index) {
+                        return value + ' / ' + row.platform;
+                    }
+                },
+                {
+                    field: 'pkgName',
+                    title: '意见反馈',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)"' +
+                            ' onclick="gotoFeedback(\'' + value + '\',\'' + row.platform + '\',\''
+                            + row.appName + '\')">查看详情</a> ');
+                        return actions.join('');
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    visible: false,
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.pkgName + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.pkgName + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function gotoFeedback(pkgName, platform, appName) {
+        var url = ctx + "fb/feedback?pkgName=" + pkgName + "&platform=" + platform;
+        createMenuItem(url, appName + '-意见反馈');
+    }
+</script>
+</body>
+</html>

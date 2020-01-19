@@ -3,9 +3,11 @@ package com.ruoyi.project.fb;
 import cn.mycommons.easyfeedback.dto.CommonResp;
 import cn.mycommons.easyfeedback.dto.PageResp;
 import cn.mycommons.easyfeedback.dto.feedback.FeedbackDto;
+import cn.mycommons.easyfeedback.dto.feedback.MetaDto;
 import cn.mycommons.easyfeedback.dto.feedback.status.UpdateStatusReq;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.common.base.Strings;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
@@ -28,7 +30,11 @@ public class FeedbackController extends BaseController {
 
     @RequiresPermissions("fb:feedback:view")
     @GetMapping()
-    public String feedback() {
+    public String feedback(@RequestParam(required = false) String pkgName,
+                           @RequestParam(required = false) String platform,
+                           ModelMap map) {
+        map.put("pkgName", Strings.isNullOrEmpty(pkgName) ? "" : pkgName);
+        map.put("platform", Strings.isNullOrEmpty(platform) ? "" : platform);
         return prefix + "/feedback";
     }
 
@@ -38,9 +44,17 @@ public class FeedbackController extends BaseController {
     @RequiresPermissions("fb:feedback:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(FeedbackDto feedbackDto) {
+    public TableDataInfo list(@RequestParam(required = false) String pkgName,
+                              @RequestParam(required = false) String platform,
+                              FeedbackDto feedbackDto) {
         startPage();
         Page<Object> page = PageHelper.getLocalPage();
+        if (!Strings.isNullOrEmpty(pkgName) && !Strings.isNullOrEmpty(platform)) {
+            feedbackDto.setMeta(new MetaDto());
+            feedbackDto.getMeta().setPkgName(pkgName);
+            feedbackDto.getMeta().setPlatform(platform);
+        }
+
         PageResp<FeedbackDto> list = feedbackApi.search(feedbackDto, page.getPageNum(), page.getPageSize());
         return getDataTable(list.getData());
     }
