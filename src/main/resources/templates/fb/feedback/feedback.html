@@ -68,8 +68,14 @@
                     title: '意见描述'
                 },
                 {
-                    field: 'contract',
-                    title: '联系方式'
+                    field: 'contact',
+                    title: '联系方式',
+                    formatter: function (value, row, index) {
+                        if (value != null && value !== "") {
+                            return value;
+                        }
+                        return 'N/A';
+                    }
                 },
                 {
                     field: 'images',
@@ -79,7 +85,7 @@
                         for (i in value) {
                             actions.push(
                                 '<img style="width: auto; height: 100px; cursor:zoom-in; object-fit: contain;" ' +
-                                'onclick=\'window.open(this.src)\' ' + 'alt="image" ' + 'src=' + value[i] + '/> '
+                                'onclick=\'window.open(this.src)\' ' + 'alt="image" ' + 'src="' + value[i] + '" /> '
                             );
                         }
                         return actions.join('');
@@ -105,6 +111,10 @@
                     formatter: function (value, row, index) {
                         return $.table.selectDictLabel(feedbackStatus, value);
                     }
+                },
+                {
+                    field: 'createAt',
+                    title: '创建时间'
                 },
                 {
                     field: 'id',
