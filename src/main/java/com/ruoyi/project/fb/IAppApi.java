@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "appApi", url = "localhost:8081")
+@FeignClient(name = "appApi", url = "${fb.server}")
 public interface IAppApi {
 
     @GetMapping("/app/list")
