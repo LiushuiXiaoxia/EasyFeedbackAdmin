@@ -55,8 +55,8 @@ public class FeedbackController extends BaseController {
             feedbackDto.getMeta().setPlatform(platform);
         }
 
-        PageResp<FeedbackDto> list = feedbackApi.search(feedbackDto, page.getPageNum(), page.getPageSize());
-        return getDataTable(list.getData());
+        PageResp<FeedbackDto> resp = feedbackApi.search(feedbackDto, page.getPageNum(), page.getPageSize());
+        return FbUtil.convert(resp);
     }
 
     @RequiresPermissions("fb:feedback:list")

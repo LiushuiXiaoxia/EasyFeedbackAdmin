@@ -38,8 +38,8 @@ public class AppController extends BaseController {
     public TableDataInfo list(AppDto dto) {
         startPage();
         Page<Object> page = PageHelper.getLocalPage();
-        // PageResp<AppDto> list = appApi.search(dto, page.getPageNum(), page.getPageSize());
-        PageResp<AppDto> list = appApi.list(page.getPageNum(), page.getPageSize());
-        return getDataTable(list.getData());
+        // PageResp<AppDto> resp = appApi.search(dto, page.getPageNum(), page.getPageSize());
+        PageResp<AppDto> resp = appApi.list(page.getPageNum(), page.getPageSize());
+        return FbUtil.convert(resp);
     }
 }

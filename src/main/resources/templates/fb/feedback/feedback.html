@@ -79,7 +79,7 @@
                 },
                 {
                     field: 'images',
-                    title: '图片信息',
+                    title: '图片',
                     formatter: function (value, row, index) {
                         var actions = [];
                         for (i in value) {
@@ -87,6 +87,18 @@
                                 '<img style="width: auto; height: 100px; cursor:zoom-in; object-fit: contain;" ' +
                                 'onclick=\'window.open(this.src)\' ' + 'alt="image" ' + 'src="' + value[i] + '" /> '
                             );
+                        }
+                        return actions.join('');
+                    }
+                },
+                {
+                    field: 'files',
+                    title: '附件',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        for (i in value) {
+                            var idx = 1 + parseInt(i);
+                            actions.push('<a href="' + value[i] + '">附件' + idx + '</a><br/>');
                         }
                         return actions.join('');
                     }
