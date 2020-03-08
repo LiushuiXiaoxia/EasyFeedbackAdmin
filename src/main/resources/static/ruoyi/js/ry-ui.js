@@ -58,6 +58,7 @@ var table = {
                     showToggle: true,
                     showExport: false,
                     clickToSelect: false,
+                    singleSelect: false,
                     mobileResponsive: true,
                     rememberSelected: false,
         		    fixedColumns: false,
@@ -103,6 +104,7 @@ var table = {
                     showExport: options.showExport,                     // 是否支持导出文件
                     uniqueId: options.uniqueId,                         // 唯 一的标识符
                     clickToSelect: options.clickToSelect,				// 是否启用点击选中行
+                    singleSelect: options.singleSelect,                 // 是否单选checkbox
                     mobileResponsive: options.mobileResponsive,         // 是否支持移动端适配
                     detailView: options.detailView,                     // 是否启用显示细节视图
                     onClickRow: options.onClickRow,                     // 点击某行触发的事件
@@ -337,14 +339,19 @@ var table = {
     			} else{
     				$("#" + table.options.id).bootstrapTable('refresh', params);
     			}
+    		    data = {};
     		},
     		// 导出数据
     		exportExcel: function(formId) {
     			table.set();
     			$.modal.confirm("确定导出所有" + table.options.modalName + "吗？", function() {
 	    			var currentId = $.common.isEmpty(formId) ? $('form').attr('id') : formId;
+	    			var params = $("#" + table.options.id).bootstrapTable('getOptions');
+	    			var dataParam = $("#" + currentId).serializeArray();
+	    			dataParam.push({ "name": "orderByColumn", "value": params.sortName });
+	    			dataParam.push({ "name": "isAsc", "value": params.sortOrder });
 	    			$.modal.loading("正在导出数据，请稍后...");
-	    			$.post(table.options.exportUrl, $("#" + currentId).serializeArray(), function(result) {
+	    			$.post(table.options.exportUrl, dataParam, function(result) {
 	    				if (result.code == web_status.SUCCESS) {
 	    			        window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
 	    				} else if (result.code == web_status.WARNING) {
@@ -393,9 +400,7 @@ var table = {
             			}
             			var index = layer.load(2, {shade: false});
             			$.modal.disable();
-            			var formData = new FormData();
-            			formData.append("file", layero.find('#file')[0].files[0]);
-            			formData.append("updateSupport", $("input[name='updateSupport']").is(':checked'));
+            			var formData = new FormData(layero.find('form')[0]);
             			$.ajax({
             				url: table.options.importUrl,
             				data: formData,
@@ -578,6 +583,12 @@ var table = {
             	    	$("#" + table.options.id).bootstrapTable('refresh');
                 	} else{
                 	    $("#" + tableId).bootstrapTable('refresh');
+                	}
+            	} else if (table.options.type == table_type.bootstrapTreeTable) {
+            		if($.common.isEmpty(tableId)){
+            	    	$("#" + table.options.id).bootstrapTreeTable('refresh', []);
+                	} else{
+                	    $("#" + tableId).bootstrapTreeTable('refresh', []);
                 	}
             	}
             },
