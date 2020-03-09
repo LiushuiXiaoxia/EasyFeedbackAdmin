@@ -31,6 +31,8 @@ public class SignTask {
     }
 
     public Object sendMessage(String userId) throws IOException, ParseException {
+        log.info("userId = {}", userId);
+
         Sender sender = new Sender(pushConfig.appSecretKey);
         String messagePayload = "This is a message";
         Message message = new Message.Builder()
