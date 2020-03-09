@@ -139,3 +139,10 @@ gen:
   autoRemovePre: true
   # 表前缀（生成类名不会包含表前缀，多个用逗号分隔）
   tablePrefix: sys_
+
+push:
+  appId: "2882303761518336400"
+  appSecretKey: tNdXOwhmALLtiB+biq+mRg==
+  appPkgName: com.itutorgroup.android.autosign
+  title: 打卡提醒
+  desc: 亲，记得按时打卡哦^_^
