@@ -10,6 +10,6 @@ rm -rf ${DEPLOY_PATH}
 
 mkdir -p  ${DEPLOY_PATH}
 
-cp target/*.jar ${DEPLOY_PATH}/app.jar
+cp target/*.jar ${DEPLOY_PATH}/auto_sign.jar
 cp script/*.sh ${DEPLOY_PATH}
 chmod +x ${DEPLOY_PATH}/*.sh

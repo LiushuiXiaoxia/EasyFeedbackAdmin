@@ -7,7 +7,7 @@ DIR_HOME="${BASH_SOURCE-$0}"
 DIR_HOME="$(dirname "$DIR_HOME")"
 PKG_DIR="$(cd "${DIR_HOME}"; pwd)"
 
-jarfile=${PKG_DIR}/app.jar
+jarfile=${PKG_DIR}/auto_sign.jar
 
 #create log dir
 mkdir -p ${PKG_DIR}/logs/
