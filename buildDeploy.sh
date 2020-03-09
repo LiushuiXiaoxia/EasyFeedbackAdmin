@@ -6,7 +6,7 @@ mvn clean package
 
 DEPLOY_PATH=/root/deploy/auto_sign
 #DEPLOY_PATH=/Users/xiaqiulei/deploy/auto_sign
-# rm -rf ${DEPLOY_PATH}
+rm -rf ${DEPLOY_PATH}
 
 mkdir -p  ${DEPLOY_PATH}
 
