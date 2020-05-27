@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
     <title>若依系统首页</title>
-    <!--[if lt IE 9]>
-    <meta http-equiv="refresh" content="0;ie.html"/>
-    <![endif]-->
+    <!-- 避免IE使用兼容模式 -->
+ 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link th:href="@{favicon.ico}" rel="stylesheet"/>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/jquery.contextMenu.min.css}" rel="stylesheet"/>
@@ -15,7 +14,7 @@
     <link th:href="@{/css/animate.css}" rel="stylesheet"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
     <link th:href="@{/css/skins.css}" rel="stylesheet"/>
-    <link th:href="@{/ruoyi/css/ry-ui.css?v=4.1.0}" rel="stylesheet"/>
+    <link th:href="@{/ruoyi/css/ry-ui.css?v=4.2.0}" rel="stylesheet"/>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow: hidden">
 <div id="wrapper">
@@ -25,16 +24,16 @@
         <div class="nav-close">
             <i class="fa fa-times-circle"></i>
         </div>
+        <a th:href="@{/index}">
+            <li class="logo hidden-xs">
+                <span class="logo-lg">RuoYi</span> 
+            </li>
+         </a>
         <div class="sidebar-collapse">
             <ul class="nav" id="side-menu">
-                <a th:href="@{/index}">
-                  <li class="logo">
-				    <span class="logo-lg" >RuoYi</span> 
-            	  </li>
-            	</a>
             	<li>
             		<div class="user-panel">
-            			<a class="menuItem" title="个人中心" th:href="@{/system/user/profile}"> 
+            			<a class="menuItem noactive" title="个人中心" th:href="@{/system/user/profile}"> 
             				<div class="hide" th:text="个人中心"></div>
 					        <div class="pull-left image">
 		                    	<img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}" class="img-circle" alt="User Image">
@@ -109,6 +108,7 @@
 								<li><a class="menuItem" th:href="@{/demo/table/params}">自定义查询参数</a></li>
 								<li><a class="menuItem" th:href="@{/demo/table/multi}">初始多表格</a></li>
 								<li><a class="menuItem" th:href="@{/demo/table/button}">点击按钮加载表格</a></li>
+								<li><a class="menuItem" th:href="@{/demo/table/data}">直接加载表格数据</a></li>
 								<li><a class="menuItem" th:href="@{/demo/table/fixedColumns}">表格冻结列</a></li>
 								<li><a class="menuItem" th:href="@{/demo/table/event}">自定义触发事件</a></li>
 								<li><a class="menuItem" th:href="@{/demo/table/detail}">表格细节视图</a></li>
@@ -148,8 +148,8 @@
 							</ul>
                         </li>
                         <li>
-	                        <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">四层菜单 </span><span class="fa arrow"></span></a>
-	                        <ul class="nav nav-second-level collapse">
+	                        <a href="#"><i class="fa fa-sitemap"></i>四层菜单<span class="fa arrow"></span></a>
+	                        <ul class="nav nav-third-level collapse">
 	                            <li>
 	                                <a href="#" id="damian">三级菜单1<span class="fa arrow"></span></a>
 	                                <ul class="nav nav-third-level">
@@ -187,7 +187,7 @@
                     <li class="dropdown user-menu">
 						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
 							<img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}" class="user-image">
-							<span class="hidden-xs">[[${user.userName}]]</span>
+							<span class="hidden-xs">[[${#strings.defaultString(user.userName, '-')}]]</span>
 						</a>
 						<ul class="dropdown-menu">
 							<li class="mt5">
@@ -247,8 +247,8 @@
 <script th:src="@{/js/jquery.contextMenu.min.js}"></script>
 <script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
 <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
-<script th:src="@{/ruoyi/js/ry-ui.js?v=4.1.0}"></script>
-<script th:src="@{/ruoyi/js/common.js?v=4.1.0}"></script>
+<script th:src="@{/ruoyi/js/ry-ui.js?v=4.2.0}"></script>
+<script th:src="@{/ruoyi/js/common.js?v=4.2.0}"></script>
 <script th:src="@{/ruoyi/index.js}"></script>
 <script th:src="@{/ajax/libs/fullscreen/jquery.fullscreen.js}"></script>
 <script th:inline="javascript">
@@ -259,18 +259,14 @@ var skin = storage.get("skin");
 var mode = "history";
 // 历史访问路径缓存
 var historyPath = storage.get("historyPath");
-// 排除非左侧菜单链接
-var excludesUrl = ["/system/user/profile"];
 
 // 本地主题优先，未设置取系统配置
 if($.common.isNotEmpty(skin)){
 	$("body").addClass(skin.split('|')[0]);
 	$("body").addClass(skin.split('|')[1]);
 } else {
-	var sideTheme = [[${@config.getKey('sys.index.sideTheme')}]];
-	var skinName = [[${@config.getKey('sys.index.skinName')}]];
-	$("body").addClass(sideTheme);
-	$("body").addClass(skinName);
+	$("body").addClass([[${sideTheme}]]);
+	$("body").addClass([[${skinName}]]);
 }
 
 /* 用户管理-重置密码 */
@@ -292,9 +288,9 @@ function switchSkin() {
 /** 刷新时访问路径页签 */
 function applyPath(url) {
 	$('a[href$="' + decodeURI(url) + '"]').click();
-    if($.inArray(url, excludesUrl)){
-        $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li").addClass("active").end().parents("ul").addClass("in");
-    }
+	if (!$('a[href$="' + url + '"]').hasClass("noactive")) {
+	    $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li").addClass("active").end().parents("ul").addClass("in");
+	}
 }
 
 $(function() {

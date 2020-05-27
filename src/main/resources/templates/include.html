@@ -2,6 +2,7 @@
 <head th:fragment=header(title)>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="keywords" content="">
 	<meta name="description" content="">
 	<title th:text="${title}"></title>
@@ -11,16 +12,17 @@
 	<!-- bootstrap-table 表格插件样式 -->
 	<link th:href="@{/ajax/libs/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
 	<link th:href="@{/css/animate.css}" rel="stylesheet"/>
-	<link th:href="@{/css/style.css}" rel="stylesheet"/>
+	<link th:href="@{/css/style.css?v=20200318}" rel="stylesheet"/>
 	<link th:href="@{/ruoyi/css/ry-ui.css}" rel="stylesheet"/>
 </head>
 
 <!-- 通用JS -->
 <div th:fragment="footer">
+    <a id="scroll-up" href="#" class="btn btn-sm display"><i class="fa fa-angle-double-up"></i></a>
 	<script th:src="@{/js/jquery.min.js}"></script>
 	<script th:src="@{/js/bootstrap.min.js}"></script>
 	<!-- bootstrap-table 表格插件 -->
-	<script th:src="@{/ajax/libs/bootstrap-table/bootstrap-table.min.js?v=20191219}"></script>
+	<script th:src="@{/ajax/libs/bootstrap-table/bootstrap-table.min.js?v=20200423}"></script>
 	<script th:src="@{/ajax/libs/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"></script>
 	<script th:src="@{/ajax/libs/bootstrap-table/extensions/mobile/bootstrap-table-mobile.js}"></script>
 	<script th:src="@{/ajax/libs/bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js}"></script>
@@ -39,8 +41,8 @@
     <script th:src="@{/ajax/libs/iCheck/icheck.min.js}"></script>
 	<script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
 	<script th:src="@{/ajax/libs/layui/layui.js}"></script>
-	<script th:src="@{/ruoyi/js/common.js?v=4.1.0}"></script>
-	<script th:src="@{/ruoyi/js/ry-ui.js?v=4.1.0}"></script>
+	<script th:src="@{/ruoyi/js/common.js?v=4.2.0}"></script>
+	<script th:src="@{/ruoyi/js/ry-ui.js?v=4.2.0}"></script>
 	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
 </div>
 
@@ -74,7 +76,7 @@
     <link th:href="@{/ajax/libs/datapicker/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
 </div>
 <div th:fragment="datetimepicker-js">
-    <script th:src="@{/ajax/libs//datapicker/bootstrap-datetimepicker.min.js}"></script>
+    <script th:src="@{/ajax/libs/datapicker/bootstrap-datetimepicker.min.js}"></script>
 </div>
 
 <!-- ui布局插件 -->

@@ -23,6 +23,7 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.post.service.IPostService;
 import com.ruoyi.project.system.role.service.IRoleService;
 import com.ruoyi.project.system.user.domain.User;
+import com.ruoyi.project.system.user.domain.UserRole;
 import com.ruoyi.project.system.user.service.IUserService;
 
 /**
@@ -180,13 +181,40 @@ public class UserController extends BaseController
         userService.checkUserAllowed(user);
         if (userService.resetUserPwd(user) > 0)
         {
-            if (ShiroUtils.getUserId() == user.getUserId())
+            if (ShiroUtils.getUserId().longValue() == user.getUserId().longValue())
             {
                 setSysUser(userService.selectUserById(user.getUserId()));
             }
             return success();
         }
         return error();
+    }
+
+    /**
+     * 进入授权角色页
+     */
+    @GetMapping("/authRole/{userId}")
+    public String authRole(@PathVariable("userId") Long userId, ModelMap mmap)
+    {
+        User user = userService.selectUserById(userId);
+        // 获取用户所属的角色列表
+        List<UserRole> userRoles = userService.selectUserRoleByUserId(userId);
+        mmap.put("user", user);
+        mmap.put("userRoles", userRoles);
+        return prefix + "/authRole";
+    }
+
+    /**
+     * 用户授权角色
+     */
+    @RequiresPermissions("system:user:add")
+    @Log(title = "用户管理", businessType = BusinessType.GRANT)
+    @PostMapping("/authRole/insertAuthRole")
+    @ResponseBody
+    public AjaxResult insertAuthRole(Long userId, Long[] roleIds)
+    {
+        userService.insertUserAuth(userId, roleIds);
+        return success();
     }
 
     @RequiresPermissions("system:user:remove")

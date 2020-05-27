@@ -106,9 +106,14 @@ public class DeptController extends BaseController
         {
             return error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
-        else if(dept.getParentId().equals(dept.getDeptId()))
+        else if (dept.getParentId().equals(dept.getDeptId()))
         {
             return error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
+        }
+        else if (StringUtils.equals(UserConstants.DEPT_DISABLE, dept.getStatus())
+                && deptService.selectNormalChildrenDeptById(dept.getDeptId()) > 0)
+        {
+            return AjaxResult.error("该部门包含未停用的子部门！");
         }
         return toAjax(deptService.updateDept(dept));
     }
@@ -145,11 +150,16 @@ public class DeptController extends BaseController
 
     /**
      * 选择部门树
+     * 
+     * @param deptId 部门ID
+     * @param excludeId 排除ID
      */
-    @GetMapping("/selectDeptTree/{deptId}")
-    public String selectDeptTree(@PathVariable("deptId") Long deptId, ModelMap mmap)
+    @GetMapping(value = { "/selectDeptTree/{deptId}", "/selectDeptTree/{deptId}/{excludeId}" })
+    public String selectDeptTree(@PathVariable("deptId") Long deptId,
+            @PathVariable(value = "excludeId", required = false) String excludeId, ModelMap mmap)
     {
         mmap.put("dept", deptService.selectDeptById(deptId));
+        mmap.put("excludeId", excludeId);
         return prefix + "/tree";
     }
 
@@ -161,6 +171,19 @@ public class DeptController extends BaseController
     public List<Ztree> treeData()
     {
         List<Ztree> ztrees = deptService.selectDeptTree(new Dept());
+        return ztrees;
+    }
+
+    /**
+     * 加载部门列表树（排除下级）
+     */
+    @GetMapping("/treeData/{excludeId}")
+    @ResponseBody
+    public List<Ztree> treeDataExcludeChild(@PathVariable(value = "excludeId", required = false) Long excludeId)
+    {
+        Dept dept = new Dept();
+        dept.setDeptId(excludeId);
+        List<Ztree> ztrees = deptService.selectDeptTreeExcludeChild(dept);
         return ztrees;
     }
 
