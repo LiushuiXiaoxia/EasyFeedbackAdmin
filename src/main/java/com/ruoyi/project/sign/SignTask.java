@@ -44,7 +44,9 @@ public class SignTask {
                 .notifyType(Message.NOTIFY_TYPE_ALL)
                 .notifyId((int) (System.currentTimeMillis() / 1000))
                 .build();
-        Object result = sender.sendToAlias(message, userId, 3);
+
+        // Object result = sender.sendToAlias(message, userId, 3);
+        Object result = sender.broadcastAll(message, 3);
 
         log.info("result = {}", result);
 
